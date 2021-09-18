@@ -83,7 +83,7 @@ const Session = ({ geolocationService, sessionService }: IProps) => {
     );
   };
 
-  const handleSetTrackingTarget = (userName: string) => {
+  const handleSetTrackingTarget = (userName: string): void => {
     const user = session?.users.find((u) => u.name === userName);
     setTrackingTarget(user);
   };

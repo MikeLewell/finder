@@ -14,13 +14,15 @@ const Compass = ({ userPosition, trackingTarget }: IProps) => {
   useEffect(() => {
     if (userPosition && trackingTarget) {
       calculateAndSetDistanceToTarget();
+    }
 
+    if (userPosition.coords.heading && trackingTarget) {
       calculateAndSetTargetBearingOffset();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userPosition, trackingTarget]);
 
-  const calculateAndSetDistanceToTarget = () => {
+  const calculateAndSetDistanceToTarget = (): void => {
     const distance = getDistance(
       {
         longitude: userPosition.coords.longitude,
@@ -33,7 +35,7 @@ const Compass = ({ userPosition, trackingTarget }: IProps) => {
     setDistanceToTarget(distance);
   };
 
-  const calculateAndSetTargetBearingOffset = () => {
+  const calculateAndSetTargetBearingOffset = (): void => {
     const targetBearing = getGreatCircleBearing(
       {
         longitude: userPosition.coords.longitude,
@@ -54,18 +56,15 @@ const Compass = ({ userPosition, trackingTarget }: IProps) => {
   const calculateDegreeOffset = (
     userHeading: number | null,
     targetBearing: number
-  ) => {
-    if (userHeading) {
-      const bearing = targetBearing - userHeading;
+  ): number => {
+    //@ts-ignore
+    const bearing = targetBearing - userHeading;
 
-      if (!bearing) {
-        return 360 - bearing;
-      }
-
-      return bearing;
+    if (!bearing) {
+      return 360 - bearing;
     }
 
-    return 0;
+    return bearing;
   };
 
   return (

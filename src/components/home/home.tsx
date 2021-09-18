@@ -18,7 +18,7 @@ const Home = (props: IProps) => {
   const [sessionId, setSessionId] = useState("");
   const history = useHistory();
 
-  const createSession = async () => {
+  const createSession = async (): Promise<void> => {
     const position = await props.geolocationService.getIntialPosition();
     const { longitude, latitude } = position.coords;
 
@@ -40,7 +40,7 @@ const Home = (props: IProps) => {
       .subscribe();
   };
 
-  const joinSession = async () => {
+  const joinSession = async (): Promise<void> => {
     const position = await props.geolocationService.getIntialPosition();
     const { longitude, latitude } = position.coords;
 
