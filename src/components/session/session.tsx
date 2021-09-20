@@ -105,9 +105,7 @@ const Session = ({ geolocationService, sessionService }: IProps) => {
             onChange={(e) => handleSetTrackingTarget(e.target.value)}
             className="input input--center-text"
           >
-            <option defaultValue="true" selected>
-              Who would you like to find?
-            </option>
+            <option defaultValue="true">Who would you like to find?</option>
             {session.users
               .filter((u) => u.id !== userId)
               .map((u) => (

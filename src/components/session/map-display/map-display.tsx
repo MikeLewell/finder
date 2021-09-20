@@ -17,6 +17,7 @@ const MapDisplay = ({ user, users }: IProps) => {
           >
             {users.map((u) => (
               <Marker
+                key={u.id}
                 width={30}
                 anchor={[u.coords.latitude, u.coords.longitude]}
                 color={"indianred"}
