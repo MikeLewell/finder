@@ -90,7 +90,7 @@ const Session = ({ geolocationService, sessionService }: IProps) => {
 
   return (
     <div className="flex--column flex--spacing-bottom">
-      <span className="flex flex--align-center flex--justify-center spacing__bottom--large">
+      <span className="flex flex--align-center flex--justify-center">
         <span className="session-identifier">
           Session ID:{" "}
           <span className="session-identifier__code">{session?.id}</span>
