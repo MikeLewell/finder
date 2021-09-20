@@ -114,8 +114,8 @@
     }
   }
   &__face {
-    box-shadow: 20px 20px 60px #d9d200, -20px -20px 60px #ffff00;
-    background-color: gold;
+    background: linear-gradient(145deg, #e6c200, #ffe600);
+    box-shadow: 19px 19px 38px #d9b700, -19px -19px 38px #fff700;
     width: 100%;
     position: relative;
     border-radius: 100%;
@@ -185,6 +185,7 @@
 }
 
 .distance-indicator {
+  z-index: 2;
   height: 12px;
   display: flex;
   font-size: 20px;
