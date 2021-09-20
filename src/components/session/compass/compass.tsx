@@ -16,7 +16,7 @@ const Compass = ({ userPosition, trackingTarget }: IProps) => {
       calculateAndSetDistanceToTarget();
     }
 
-    if (userPosition.coords.heading && trackingTarget) {
+    if (userPosition?.coords.heading && trackingTarget) {
       calculateAndSetTargetBearingOffset();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
