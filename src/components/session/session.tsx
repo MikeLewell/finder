@@ -106,7 +106,7 @@ const Session = ({ geolocationService, sessionService }: IProps) => {
             className="input input--center-text"
           >
             <option defaultValue="true" selected>
-              Who you would like to find?
+              Who would you like to find?
             </option>
             {session.users
               .filter((u) => u.id !== userId)
