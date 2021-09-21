@@ -84,9 +84,7 @@
   height: 40px;
   font-size: 20px;
   padding: 0 10px;
-  border: 2px solid #e0e0e0;
   border-radius: 8px;
-  background: #ffff86;
   border: 2px solid black;
   &--center-text {
     text-align: center;
@@ -114,8 +112,8 @@
     }
   }
   &__face {
-    background: linear-gradient(145deg, #e6c200, #ffe600);
-    box-shadow: 19px 19px 38px #d9b700, -19px -19px 38px #fff700;
+    background: linear-gradient(145deg, #d9d9d9, #ffffff);
+    box-shadow: 20px 20px 60px #cdcdcd, -20px -20px 60px #ffffff;
     width: 100%;
     position: relative;
     border-radius: 100%;
