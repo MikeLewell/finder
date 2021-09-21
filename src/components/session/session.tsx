@@ -29,11 +29,6 @@ const Session = ({ geolocationService, sessionService }: IProps) => {
     updateSessionWithNewUserCoords().subscribe();
 
     getLocalUserPostionUpdates().subscribe();
-
-    return () => {
-      sessionService.session$.unsubscribe();
-      geolocationService.currentPostion$.unsubscribe();
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
