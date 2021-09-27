@@ -12,17 +12,17 @@ interface IProps {
   sessionService: SessionService;
 }
 
-const Home = (props: IProps) => {
+const Home = ({ geolocationService, sessionService }: IProps) => {
   const [creatorUserName, setCreatorUserName] = useState<string>("");
   const [joiningUserName, setJoiningUserName] = useState<string>("");
   const [sessionId, setSessionId] = useState<string>("");
   const history = useHistory();
 
   const createSession = async (): Promise<void> => {
-    const position = await props.geolocationService.getIntialPosition();
+    const position = await geolocationService.getIntialPosition();
     const { longitude, latitude } = position.coords;
 
-    props.sessionService
+    sessionService
       .createSession({
         name: creatorUserName,
         coords: {
@@ -41,10 +41,10 @@ const Home = (props: IProps) => {
   };
 
   const joinSession = async (): Promise<void> => {
-    const position = await props.geolocationService.getIntialPosition();
+    const position = await geolocationService.getIntialPosition();
     const { longitude, latitude } = position.coords;
 
-    props.sessionService
+    sessionService
       .joinSession({
         name: joiningUserName,
         coords: {
