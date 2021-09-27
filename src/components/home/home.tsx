@@ -13,9 +13,9 @@ interface IProps {
 }
 
 const Home = (props: IProps) => {
-  const [creatorUserName, setCreatorUserName] = useState("");
-  const [joiningUserName, setJoiningUserName] = useState("");
-  const [sessionId, setSessionId] = useState("");
+  const [creatorUserName, setCreatorUserName] = useState<string>("");
+  const [joiningUserName, setJoiningUserName] = useState<string>("");
+  const [sessionId, setSessionId] = useState<string>("");
   const history = useHistory();
 
   const createSession = async (): Promise<void> => {
