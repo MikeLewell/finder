@@ -70,7 +70,7 @@ const Session = ({ geolocationService, sessionService }: IProps) => {
               : u
           ),
         };
-        sessionService.updateSession(sessionWithUpdatedUser);
+        sessionService.updateSessionViaSocket(sessionWithUpdatedUser);
       })
     );
   };

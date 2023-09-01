@@ -1,5 +1,6 @@
 import { Map, Marker } from "pigeon-maps";
 import { IUser } from "../../../models/session";
+import { stamenToner } from "pigeon-maps/providers";
 
 interface IProps {
   user: IUser;
@@ -12,6 +13,7 @@ const MapDisplay = ({ user, users }: IProps) => {
       {user && users && (
         <div className="map">
           <Map
+            provider={stamenToner}
             defaultCenter={[user.coords.latitude, user.coords.longitude]}
             defaultZoom={15}
           >

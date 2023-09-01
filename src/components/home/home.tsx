@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { tap } from "rxjs/operators";
+import { mergeMap, tap } from "rxjs/operators";
 import { useHistory } from "react-router-dom";
 
 import Button from "../../patterns/button";
 import Input from "../../patterns/input";
 import GeolocationService from "../../services/geolocation-service";
 import SessionService from "../../services/session-service";
+import { createId, createShortId } from "../../lib/utilities";
 
 interface IProps {
   geolocationService: GeolocationService;
@@ -21,19 +22,32 @@ const Home = ({ geolocationService, sessionService }: IProps) => {
   const createSession = async (): Promise<void> => {
     const position = await geolocationService.getIntialPosition();
     const { longitude, latitude } = position.coords;
+    const session = {
+      id: createShortId(),
+      users: [
+        {
+          id: createId(),
+          name: creatorUserName,
+          coords: {
+            longitude,
+            latitude,
+          },
+        },
+      ],
+    };
 
     sessionService
-      .createSession({
-        name: creatorUserName,
-        coords: {
-          longitude,
-          latitude,
-        },
-      })
+      .createSession(session)
       .pipe(
         tap({
-          next: (res) =>
-            history.push(`/session/${res.sessionId}/${res.userId}`),
+          next: (session) => {
+            const user = session.users.find(
+              (user) => user.name === creatorUserName
+            );
+
+            if (session && user)
+              history.push(`/session/${session.id}/${user.id}`);
+          },
           error: () => alert("Something went wrong"),
         })
       )
@@ -44,19 +58,38 @@ const Home = ({ geolocationService, sessionService }: IProps) => {
     const position = await geolocationService.getIntialPosition();
     const { longitude, latitude } = position.coords;
 
-    sessionService
-      .joinSession({
-        name: joiningUserName,
-        coords: {
-          longitude,
-          latitude,
-        },
-        sessionId: sessionId,
-      })
+    await sessionService
+      .getSession(sessionId)
+      .pipe(
+        mergeMap((session) => {
+          const updatedSession = {
+            ...session,
+            users: [
+              ...session.users,
+              {
+                id: createId(),
+                name: joiningUserName,
+                coords: {
+                  longitude,
+                  latitude,
+                },
+              },
+            ],
+          };
+
+          return sessionService.updateSession(updatedSession);
+        })
+      )
       .pipe(
         tap({
-          next: (res) =>
-            history.push(`/session/${res.sessionId}/${res.userId}`),
+          next: (session) => {
+            const user = session.users.find(
+              (user) => user.name === joiningUserName
+            );
+
+            if (session && user)
+              history.push(`/session/${session.id}/${user.id}`);
+          },
           error: () => alert("Something went wrong"),
         })
       )

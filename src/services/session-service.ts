@@ -2,7 +2,7 @@ import { Observable, of, Subject } from "rxjs";
 import { fromFetch } from "rxjs/fetch";
 import { catchError, switchMap } from "rxjs/operators";
 import { io, Socket } from "socket.io-client";
-import { ICreateSession, IJoinSession, ISession } from "../models/session";
+import { ISession } from "../models/session";
 
 export default class SessionService {
   session$ = new Subject<ISession>();
@@ -16,10 +16,8 @@ export default class SessionService {
     });
   }
 
-  createSession(
-    payload: ICreateSession
-  ): Observable<{ sessionId: string; userId: string }> {
-    return fromFetch(`${process.env.REACT_APP_API_HOST}/create_session`, {
+  createSession(payload: ISession): Observable<ISession> {
+    return fromFetch(`${process.env.REACT_APP_API_HOST}/session`, {
       method: "POST",
       mode: "cors",
       cache: "no-cache",
@@ -45,11 +43,35 @@ export default class SessionService {
     );
   }
 
-  joinSession(
-    payload: IJoinSession
-  ): Observable<{ sessionId: string; userId: string }> {
-    return fromFetch(`${process.env.REACT_APP_API_HOST}/join_session`, {
-      method: "POST",
+  getSession(id: string): Observable<ISession> {
+    return fromFetch(`${process.env.REACT_APP_API_HOST}/session/${id}`, {
+      method: "GET",
+      mode: "cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      redirect: "follow",
+      referrerPolicy: "no-referrer",
+    }).pipe(
+      switchMap((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          return of(new Error(`Error ${response.status}`));
+        }
+      }),
+      catchError((err) => {
+        console.error(err);
+        return of(err);
+      })
+    );
+  }
+
+  updateSession(payload: ISession): Observable<ISession> {
+    return fromFetch(`${process.env.REACT_APP_API_HOST}/session`, {
+      method: "PATCH",
       mode: "cors",
       cache: "no-cache",
       credentials: "same-origin",
@@ -78,7 +100,7 @@ export default class SessionService {
     this.socket.emit("session:join_room", sessionId);
   }
 
-  updateSession(session: ISession): void {
+  updateSessionViaSocket(session: ISession): void {
     this.socket.emit("session:update", session);
   }
 }
