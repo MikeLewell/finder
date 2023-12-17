@@ -9,12 +9,9 @@ import SessionService from "../../services/session-service";
 import Compass from "./compass/compass";
 import MapDisplay from "./map-display/map-display";
 
-interface IProps {
-  geolocationService: GeolocationService;
-  sessionService: SessionService;
-}
-
-const Session = ({ geolocationService, sessionService }: IProps) => {
+const Session: React.FC = () => {
+  const geolocationService = new GeolocationService();
+  const sessionService = new SessionService();
   const { sessionId, userId } = useParams<Record<string, string>>();
   const [session, setSession] = useState<ISession>();
   const [user, setUser] = useState<IUser>();
@@ -35,6 +32,7 @@ const Session = ({ geolocationService, sessionService }: IProps) => {
   const getSessionUpdates = (): Observable<ISession> => {
     return sessionService.session$.pipe(
       tap((session) => {
+        console.log(session);
         setSession(session);
 
         setUser(session.users.find((u) => u.id === userId));

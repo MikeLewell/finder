@@ -5,6 +5,7 @@ export interface ISession {
 
 export interface IUser {
   id: string;
+  sessionId?: string;
   name: string;
   coords: ICoords;
 }

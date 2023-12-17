@@ -8,12 +8,9 @@ import GeolocationService from "../../services/geolocation-service";
 import SessionService from "../../services/session-service";
 import { createId, createShortId } from "../../lib/utilities";
 
-interface IProps {
-  geolocationService: GeolocationService;
-  sessionService: SessionService;
-}
-
-const Home = ({ geolocationService, sessionService }: IProps) => {
+const Home: React.FC = () => {
+  const geolocationService = new GeolocationService();
+  const sessionService = new SessionService();
   const [creatorUserName, setCreatorUserName] = useState<string>("");
   const [joiningUserName, setJoiningUserName] = useState<string>("");
   const [sessionId, setSessionId] = useState<string>("");

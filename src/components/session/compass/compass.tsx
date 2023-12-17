@@ -32,6 +32,8 @@ const Compass = ({ userPosition, trackingTarget }: IProps) => {
       trackingTarget.coords
     );
 
+    console.log(distance);
+
     setDistanceToTarget(distance);
   };
 

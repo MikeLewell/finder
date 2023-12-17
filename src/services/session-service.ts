@@ -9,11 +9,12 @@ export default class SessionService {
   socket: Socket;
 
   constructor() {
-    this.socket = io(`${process.env.REACT_APP_API_HOST}`);
-
-    this.socket.on("session", (session: ISession) => {
+    const socket = io(`${process.env.REACT_APP_API_HOST}`);
+    socket.on("session", (session: ISession) => {
       this.session$.next(session);
     });
+
+    this.socket = socket;
   }
 
   createSession(payload: ISession): Observable<ISession> {
