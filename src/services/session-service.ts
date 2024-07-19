@@ -1,14 +1,15 @@
 import { Observable, of, Subject } from "rxjs";
 import { fromFetch } from "rxjs/fetch";
 import { catchError, switchMap } from "rxjs/operators";
-import { io, Socket } from "socket.io-client";
+// import { io, Socket } from "socket.io-client";
 import { ISession } from "../models/session";
+import Socket from "./socket";
 
 const useSession = () => {
   const session$ = new Subject<ISession>();
-  const socket: Socket = io(`${process.env.REACT_APP_API}`);
+  // const socket: Socket = io(`${process.env.REACT_APP_API}`);
 
-  socket.on("session", (session: ISession) => {
+  Socket.on("session", (session: ISession) => {
     console.log("received session", session);
     session$.next(session);
   });
@@ -85,11 +86,11 @@ const useSession = () => {
   };
 
   const connectToSocketRoom = (sessionId: string): void => {
-    socket.emit("session:join_room", sessionId);
+    Socket.emit("session:join_room", sessionId);
   };
 
   const socketUpdateSession = (session: ISession): void => {
-    socket.emit("session:update", session);
+    Socket.emit("session:update", session);
   };
 
   return {
