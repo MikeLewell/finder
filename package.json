@@ -1,11 +1,8 @@
 {
-  "name": "whereiseveryone-frontend",
+  "name": "finder",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^5.14.1",
-    "@testing-library/react": "^11.2.7",
-    "@testing-library/user-event": "^12.8.3",
     "@types/react": "^17.0.21",
     "@types/react-router-dom": "^5.1.9",
     "geolib": "^3.3.1",
@@ -13,7 +10,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-router-dom": "^5.3.0",
-    "react-scripts": "4.0.3",
+    "react-scripts": "^5.0.1",
     "rxjs": "^7.3.0",
     "sass": "^1.41.0",
     "socket.io-client": "^4.2.0",

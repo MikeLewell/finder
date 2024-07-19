@@ -1,6 +1,6 @@
 export interface ISession {
   id: string;
-  users: IUser[];
+  users?: IUser[];
 }
 
 export interface IUser {

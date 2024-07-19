@@ -4,30 +4,23 @@ import { catchError, switchMap } from "rxjs/operators";
 import { io, Socket } from "socket.io-client";
 import { ISession } from "../models/session";
 
-export default class SessionService {
-  session$ = new Subject<ISession>();
-  socket: Socket;
+const useSession = () => {
+  const session$ = new Subject<ISession>();
+  const socket: Socket = io(`${process.env.REACT_APP_API}`);
 
-  constructor() {
-    const socket = io(`${process.env.REACT_APP_API_HOST}`);
-    socket.on("session", (session: ISession) => {
-      this.session$.next(session);
-    });
+  socket.on("session", (session: ISession) => {
+    console.log("received session", session);
+    session$.next(session);
+  });
 
-    this.socket = socket;
-  }
-
-  createSession(payload: ISession): Observable<ISession> {
-    return fromFetch(`${process.env.REACT_APP_API_HOST}/session`, {
+  const createSession = (payload: ISession): Observable<ISession> => {
+    return fromFetch(`${process.env.REACT_APP_API}/session`, {
       method: "POST",
       mode: "cors",
       cache: "no-cache",
-      credentials: "same-origin",
       headers: {
         "Content-Type": "application/json",
       },
-      redirect: "follow",
-      referrerPolicy: "no-referrer",
       body: JSON.stringify(payload),
     }).pipe(
       switchMap((response) => {
@@ -42,19 +35,16 @@ export default class SessionService {
         return of(err);
       })
     );
-  }
+  };
 
-  getSession(id: string): Observable<ISession> {
-    return fromFetch(`${process.env.REACT_APP_API_HOST}/session/${id}`, {
+  const getSession = (id: string): Observable<ISession> => {
+    return fromFetch(`${process.env.REACT_APP_API}/session/${id}`, {
       method: "GET",
       mode: "cors",
       cache: "no-cache",
-      credentials: "same-origin",
       headers: {
         "Content-Type": "application/json",
       },
-      redirect: "follow",
-      referrerPolicy: "no-referrer",
     }).pipe(
       switchMap((response) => {
         if (response.ok) {
@@ -68,19 +58,16 @@ export default class SessionService {
         return of(err);
       })
     );
-  }
+  };
 
-  updateSession(payload: ISession): Observable<ISession> {
-    return fromFetch(`${process.env.REACT_APP_API_HOST}/session`, {
+  const updateSession = (payload: ISession): Observable<ISession> => {
+    return fromFetch(`${process.env.REACT_APP_API}/session`, {
       method: "PATCH",
       mode: "cors",
       cache: "no-cache",
-      credentials: "same-origin",
       headers: {
         "Content-Type": "application/json",
       },
-      redirect: "follow",
-      referrerPolicy: "no-referrer",
       body: JSON.stringify(payload),
     }).pipe(
       switchMap((response) => {
@@ -95,13 +82,24 @@ export default class SessionService {
         return of(err);
       })
     );
-  }
+  };
 
-  connectToSocketRoom(sessionId: string): void {
-    this.socket.emit("session:join_room", sessionId);
-  }
+  const connectToSocketRoom = (sessionId: string): void => {
+    socket.emit("session:join_room", sessionId);
+  };
 
-  updateSessionViaSocket(session: ISession): void {
-    this.socket.emit("session:update", session);
-  }
-}
+  const socketUpdateSession = (session: ISession): void => {
+    socket.emit("session:update", session);
+  };
+
+  return {
+    session$,
+    createSession,
+    getSession,
+    updateSession,
+    connectToSocketRoom,
+    socketUpdateSession,
+  };
+};
+
+export { useSession };

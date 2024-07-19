@@ -1,49 +1,49 @@
 import React, { useState } from "react";
-import { mergeMap, tap } from "rxjs/operators";
+import { switchMap, tap } from "rxjs/operators";
 import { useHistory } from "react-router-dom";
 
 import Button from "../../patterns/button";
 import Input from "../../patterns/input";
-import GeolocationService from "../../services/geolocation-service";
-import SessionService from "../../services/session-service";
+import { useSession } from "../../services/session-service";
 import { createId, createShortId } from "../../lib/utilities";
+import { useGeolocation } from "../../services/geolocation-service";
+import { useUser } from "../../services/user-service";
+import Header from "../../patterns/header";
 
 const Home: React.FC = () => {
-  const geolocationService = new GeolocationService();
-  const sessionService = new SessionService();
+  const { getFirstPosition } = useGeolocation();
+  const { createSession } = useSession();
+  const { createUser } = useUser();
   const [creatorUserName, setCreatorUserName] = useState<string>("");
   const [joiningUserName, setJoiningUserName] = useState<string>("");
   const [sessionId, setSessionId] = useState<string>("");
   const history = useHistory();
 
-  const createSession = async (): Promise<void> => {
-    const position = await geolocationService.getIntialPosition();
+  const createNewSession = async (): Promise<void> => {
+    const position = await getFirstPosition();
     const { longitude, latitude } = position.coords;
     const session = {
       id: createShortId(),
-      users: [
-        {
-          id: createId(),
-          name: creatorUserName,
-          coords: {
-            longitude,
-            latitude,
-          },
-        },
-      ],
     };
 
-    sessionService
-      .createSession(session)
+    createSession(session)
       .pipe(
+        switchMap((session) => {
+          console.log(session);
+          return createUser({
+            id: createId(),
+            sessionId: session.id,
+            name: creatorUserName,
+            coords: {
+              longitude,
+              latitude,
+            },
+          });
+        }),
         tap({
-          next: (session) => {
-            const user = session.users.find(
-              (user) => user.name === creatorUserName
-            );
-
-            if (session && user)
-              history.push(`/session/${session.id}/${user.id}`);
+          next: (user) => {
+            console.log("user", user);
+            if (user) history.push(`/session/${session.id}/${user.id}`);
           },
           error: () => alert("Something went wrong"),
         })
@@ -52,40 +52,22 @@ const Home: React.FC = () => {
   };
 
   const joinSession = async (): Promise<void> => {
-    const position = await geolocationService.getIntialPosition();
+    const position = await getFirstPosition();
     const { longitude, latitude } = position.coords;
 
-    await sessionService
-      .getSession(sessionId)
-      .pipe(
-        mergeMap((session) => {
-          const updatedSession = {
-            ...session,
-            users: [
-              ...session.users,
-              {
-                id: createId(),
-                name: joiningUserName,
-                coords: {
-                  longitude,
-                  latitude,
-                },
-              },
-            ],
-          };
-
-          return sessionService.updateSession(updatedSession);
-        })
-      )
+    createUser({
+      id: createId(),
+      name: joiningUserName,
+      sessionId: sessionId,
+      coords: {
+        longitude,
+        latitude,
+      },
+    })
       .pipe(
         tap({
-          next: (session) => {
-            const user = session.users.find(
-              (user) => user.name === joiningUserName
-            );
-
-            if (session && user)
-              history.push(`/session/${session.id}/${user.id}`);
+          next: (user) => {
+            if (user) history.push(`/session/${sessionId}/${user.id}`);
           },
           error: () => alert("Something went wrong"),
         })
@@ -94,43 +76,47 @@ const Home: React.FC = () => {
   };
 
   return (
-    <div className="flex flex--column flex--spacing-bottom">
-      <h1>Create Session</h1>
+    <>
+      <Header />
 
-      <Input
-        type={"text"}
-        placeholder={"What is your name?"}
-        onChange={(e: string) => setCreatorUserName(e)}
-      ></Input>
+      <div className="container flex flex--column flex--spacing-bottom">
+        <h1>Create Session</h1>
 
-      <Button
-        buttonText={"Go!"}
-        disabled={!creatorUserName}
-        onClick={() => createSession()}
-      ></Button>
+        <Input
+          type={"text"}
+          placeholder={"What is your name?"}
+          onChange={(e: string) => setCreatorUserName(e)}
+        ></Input>
 
-      <hr />
+        <Button
+          buttonText={"Go!"}
+          disabled={!creatorUserName}
+          onClick={() => createNewSession()}
+        ></Button>
 
-      <h1>Join Session</h1>
+        <hr style={{ width: "100%" }} />
 
-      <Input
-        type={"text"}
-        placeholder={"What is your name?"}
-        onChange={(e: string) => setJoiningUserName(e)}
-      ></Input>
+        <h1>Join Session</h1>
 
-      <Input
-        type={"text"}
-        placeholder={"Enter a session ID"}
-        onChange={(e: string) => setSessionId(e)}
-      ></Input>
+        <Input
+          type={"text"}
+          placeholder={"What is your name?"}
+          onChange={(e: string) => setJoiningUserName(e)}
+        ></Input>
 
-      <Button
-        buttonText={"Go!"}
-        disabled={!joiningUserName}
-        onClick={() => joinSession()}
-      ></Button>
-    </div>
+        <Input
+          type={"text"}
+          placeholder={"Enter a session ID"}
+          onChange={(e: string) => setSessionId(e)}
+        ></Input>
+
+        <Button
+          buttonText={"Go!"}
+          disabled={!joiningUserName}
+          onClick={() => joinSession()}
+        ></Button>
+      </div>
+    </>
   );
 };
 

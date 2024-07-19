@@ -1,9 +1,9 @@
 import { Subject } from "rxjs";
 
-export default class GeolocationService {
-  currentPostion$ = new Subject<GeolocationPosition>();
+const useGeolocation = () => {
+  const position$ = new Subject<GeolocationPosition>();
 
-  getIntialPosition(): Promise<GeolocationPosition> {
+  const getFirstPosition = (): Promise<GeolocationPosition> => {
     return new Promise((resolve) => {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
@@ -19,12 +19,13 @@ export default class GeolocationService {
         }
       );
     });
-  }
+  };
 
-  watchPosition(): Number {
-    return navigator.geolocation.watchPosition(
+  const watchPosition = (): void => {
+    navigator.geolocation.watchPosition(
       (pos) => {
-        this.currentPostion$.next(pos);
+        console.log(pos);
+        position$.next(pos);
       },
       (err) => {
         console.warn(`ERROR(${err.code}): ${err.message}`);
@@ -35,5 +36,9 @@ export default class GeolocationService {
         maximumAge: 0,
       }
     );
-  }
-}
+  };
+
+  return { position$, getFirstPosition, watchPosition };
+};
+
+export { useGeolocation };

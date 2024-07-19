@@ -1,6 +1,7 @@
 import { getDistance, getGreatCircleBearing } from "geolib";
 import { useEffect, useState } from "react";
 import { IUser } from "../../../models/session";
+import arrow from "../../../arrow.svg";
 
 interface IProps {
   userPosition: GeolocationPosition;
@@ -17,7 +18,7 @@ const Compass = ({ userPosition, trackingTarget }: IProps) => {
     }
 
     if (userPosition?.coords.heading && trackingTarget) {
-      calculateAndSetTargetBearingOffset();
+      setTargetBearingOffset();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userPosition, trackingTarget]);
@@ -37,7 +38,7 @@ const Compass = ({ userPosition, trackingTarget }: IProps) => {
     setDistanceToTarget(distance);
   };
 
-  const calculateAndSetTargetBearingOffset = (): void => {
+  const setTargetBearingOffset = (): void => {
     const targetBearing = getGreatCircleBearing(
       {
         longitude: userPosition.coords.longitude,
@@ -47,7 +48,7 @@ const Compass = ({ userPosition, trackingTarget }: IProps) => {
       trackingTarget.coords
     );
 
-    const bearingOffset = calculateDegreeOffset(
+    const bearingOffset = getTargetOffsetFromUserHeading(
       userPosition.coords.heading,
       targetBearing
     );
@@ -55,18 +56,14 @@ const Compass = ({ userPosition, trackingTarget }: IProps) => {
     setBearingOffset(bearingOffset);
   };
 
-  const calculateDegreeOffset = (
-    userHeading: number | null,
+  const getTargetOffsetFromUserHeading = (
+    currentHeading: number | null,
     targetBearing: number
-  ): number => {
-    //@ts-ignore
-    const bearing = targetBearing - userHeading;
+  ) => {
+    if (currentHeading === null) return;
 
-    if (!bearing) {
-      return 360 - bearing;
-    }
-
-    return bearing;
+    let adjustedBearing = (targetBearing - currentHeading + 360) % 360;
+    return adjustedBearing;
   };
 
   return (
@@ -80,16 +77,22 @@ const Compass = ({ userPosition, trackingTarget }: IProps) => {
       </div>
 
       <div className="compass">
-        {bearingOffset && (
-          <div
-            style={{
-              transform: `rotate(${bearingOffset}deg)`,
-            }}
-            className="compass__pointer-container"
-          >
-            <span className="compass__pointer compass__pointer--target"></span>
-          </div>
-        )}
+        {/* {bearingOffset && ( */}
+        <div
+          className="compass__arrow-container"
+          style={{
+            transform: `rotate(${bearingOffset}deg)`,
+          }}
+        >
+          <img
+            className="compass_arrow"
+            alt="pointer"
+            src={arrow}
+            width="115px"
+            height="115px"
+          />
+        </div>
+        {/* )} */}
 
         <div className="compass__pointer-container">
           <span className="compass__pointer"></span>
