@@ -24,7 +24,6 @@ const useGeolocation = () => {
   const watchPosition = (): void => {
     navigator.geolocation.watchPosition(
       (pos) => {
-        console.log(pos);
         position$.next(pos);
       },
       (err) => {

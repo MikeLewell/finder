@@ -1,10 +1,14 @@
 import { catchError, Observable, of, switchMap } from "rxjs";
 import { fromFetch } from "rxjs/fetch";
 import { IUser } from "../models/session";
+import { useState } from "react";
 
 const useUser = () => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   // TODO type
   const createUser = (user: any) => {
+    setIsLoading(true);
+
     return fromFetch(`${process.env.REACT_APP_API}/user`, {
       method: "POST",
       mode: "cors",
@@ -15,6 +19,7 @@ const useUser = () => {
       body: JSON.stringify(user),
     }).pipe(
       switchMap((response) => {
+        setIsLoading(false);
         if (response.ok) {
           return response.json();
         } else {
@@ -22,6 +27,7 @@ const useUser = () => {
         }
       }),
       catchError((err) => {
+        setIsLoading(false);
         console.error(err);
         return of(err);
       })
@@ -30,6 +36,7 @@ const useUser = () => {
 
   // TODO type
   const updateUser = (user: any) => {
+    setIsLoading(true);
     return fromFetch(`${process.env.REACT_APP_API}/user/${user.id}`, {
       method: "PATCH",
       mode: "cors",
@@ -40,6 +47,7 @@ const useUser = () => {
       body: JSON.stringify(user),
     }).pipe(
       switchMap((response) => {
+        setIsLoading(false);
         if (response.ok) {
           return response.json();
         } else {
@@ -47,6 +55,7 @@ const useUser = () => {
         }
       }),
       catchError((err) => {
+        setIsLoading(false);
         console.error(err);
         return of(err);
       })
@@ -54,6 +63,7 @@ const useUser = () => {
   };
 
   const getUser = (userId: any): Observable<IUser> => {
+    setIsLoading(true);
     return fromFetch(`${process.env.REACT_APP_API}/user/${userId}`, {
       method: "GET",
       mode: "cors",
@@ -63,6 +73,7 @@ const useUser = () => {
       },
     }).pipe(
       switchMap((response) => {
+        setIsLoading(false);
         if (response.ok) {
           return response.json();
         } else {
@@ -70,13 +81,14 @@ const useUser = () => {
         }
       }),
       catchError((err) => {
+        setIsLoading(false);
         console.error(err);
         return of(err);
       })
     );
   };
 
-  return { getUser, createUser, updateUser };
+  return { isLoading, getUser, createUser, updateUser };
 };
 
 export { useUser };

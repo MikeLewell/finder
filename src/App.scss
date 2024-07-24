@@ -140,7 +140,9 @@
   &__face {
     border-radius: 50%;
     background: linear-gradient(145deg, #24293c, #2b3048);
-    box-shadow: 20px 20px 60px #222639, -20px -20px 60px #2e344d;
+    box-shadow:
+      20px 20px 60px #222639,
+      -20px -20px 60px #2e344d;
     border-radius: 50%;
     width: 100%;
     position: relative;
@@ -223,4 +225,21 @@
   font-size: 20px;
   align-items: center;
   justify-content: center;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loader {
+  animation: spin 2s linear infinite;
+  width: max-content;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  &__icon {
+    transform: scale(4);
+  }
 }

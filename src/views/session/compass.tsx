@@ -1,7 +1,7 @@
 import { getDistance, getGreatCircleBearing } from "geolib";
 import { useEffect, useState } from "react";
-import { IUser } from "../../../models/session";
-import arrow from "../../../arrow.svg";
+import { IUser } from "../../models/session";
+import arrow from "../../arrow.svg";
 
 interface IProps {
   userPosition: GeolocationPosition;
@@ -32,8 +32,6 @@ const Compass = ({ userPosition, trackingTarget }: IProps) => {
       //@ts-ignore
       trackingTarget.coords
     );
-
-    console.log(distance);
 
     setDistanceToTarget(distance);
   };
