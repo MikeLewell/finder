@@ -1,6 +1,6 @@
 import { Map, Marker } from "pigeon-maps";
-import { IUser } from "../../models/session";
 import CustomMarker from "../../patterns/marker";
+import { IUser } from "../../models/user";
 
 interface IProps {
   user: IUser;
@@ -16,17 +16,7 @@ function mapTiler(x: number, y: number, z: number, dpr?: number): string {
   }`;
 }
 
-const MapDisplay = ({ user, users, trackingTarget }: IProps) => {
-  // TODO appraise
-  const getMarkerColor = (inputUserId: string) => {
-    if (inputUserId === user.id) {
-      return "#434343";
-    }
-    if (inputUserId === trackingTarget?.id) {
-      return "darkseagreen";
-    }
-  };
-
+const MapDisplay: React.FC<IProps> = ({ user, users, trackingTarget }) => {
   return (
     <Map
       provider={mapTiler}
@@ -36,8 +26,8 @@ const MapDisplay = ({ user, users, trackingTarget }: IProps) => {
       {users?.map((u) => (
         <Marker key={u.id} anchor={[u.coords.latitude, u.coords.longitude]}>
           <CustomMarker
-            text={u.name[0].toUpperCase()}
-            color={getMarkerColor(u.id)}
+            text={u.id === user.id ? "ME" : u.name[0].toUpperCase()}
+            color={u.id === trackingTarget?.id ? "lightseagreen" : undefined}
           />
         </Marker>
       ))}

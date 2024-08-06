@@ -5,15 +5,15 @@ interface IProps {
   onChange: Function;
 }
 
-const Input = (props: IProps) => {
+const Input: React.FC<IProps> = ({ type, value, placeholder, onChange }) => {
   return (
     <input
       className="input"
-      value={props.value}
-      type={props.type}
-      placeholder={props.placeholder}
-      onChange={(e) => props.onChange(e.target.value)}
-    ></input>
+      value={value}
+      type={type}
+      placeholder={placeholder}
+      onChange={(e) => onChange(e.target.value)}
+    />
   );
 };
 

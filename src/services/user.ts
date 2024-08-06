@@ -1,12 +1,13 @@
 import { catchError, Observable, of, switchMap } from "rxjs";
 import { fromFetch } from "rxjs/fetch";
-import { IUser } from "../models/session";
 import { useState } from "react";
+import { IUser } from "../models/user";
+import { ApiError } from "../lib/error";
 
 const useUser = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  // TODO type
-  const createUser = (user: any) => {
+
+  const createUser = (user: Omit<IUser, "id">): Observable<IUser> => {
     setIsLoading(true);
 
     return fromFetch(`${process.env.REACT_APP_API}/user`, {
@@ -22,20 +23,18 @@ const useUser = () => {
         setIsLoading(false);
         if (response.ok) {
           return response.json();
-        } else {
-          return of(new Error(`Error ${response.status}`));
         }
+        throw new ApiError(response.statusText, response.status, "");
       }),
       catchError((err) => {
         setIsLoading(false);
         console.error(err);
-        return of(err);
+        throw err;
       })
     );
   };
 
-  // TODO type
-  const updateUser = (user: any) => {
+  const updateUser = (user: IUser): Observable<IUser> => {
     setIsLoading(true);
     return fromFetch(`${process.env.REACT_APP_API}/user/${user.id}`, {
       method: "PATCH",
@@ -50,19 +49,18 @@ const useUser = () => {
         setIsLoading(false);
         if (response.ok) {
           return response.json();
-        } else {
-          return of(new Error(`Error ${response.status}`));
         }
+        throw new ApiError(response.statusText, response.status, "");
       }),
       catchError((err) => {
         setIsLoading(false);
         console.error(err);
-        return of(err);
+        throw err;
       })
     );
   };
 
-  const getUser = (userId: any): Observable<IUser> => {
+  const getUser = (userId: string): Observable<IUser> => {
     setIsLoading(true);
     return fromFetch(`${process.env.REACT_APP_API}/user/${userId}`, {
       method: "GET",
@@ -76,14 +74,13 @@ const useUser = () => {
         setIsLoading(false);
         if (response.ok) {
           return response.json();
-        } else {
-          return of(new Error(`Error ${response.status}`));
         }
+        throw new ApiError(response.statusText, response.status, "");
       }),
       catchError((err) => {
         setIsLoading(false);
         console.error(err);
-        return of(err);
+        throw err;
       })
     );
   };

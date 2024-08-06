@@ -13,39 +13,88 @@
   &--justify-center {
     justify-content: center;
   }
+  &--justify-space-between {
+    justify-content: space-between;
+  }
   &--spacing-bottom {
-    & > * {
-      margin-bottom: 20px;
+    &-small {
+      & :not(:last-child) {
+        margin-bottom: 10px;
+      }
+    }
+    &-medium {
+      & :not(:last-child) {
+        margin-bottom: 20px;
+      }
+    }
+    &-large {
+      & :not(:last-child) {
+        margin-bottom: 30px;
+      }
     }
   }
   &--spacing-right {
-    & > * {
-      margin-right: 20px;
+    &-small {
+      & :not(:last-child) {
+        margin-right: 10px;
+      }
+    }
+    &-medium {
+      & :not(:last-child) {
+        margin-right: 20px;
+      }
+    }
+    &-large {
+      & :not(:last-child) {
+        margin-right: 30px;
+      }
     }
   }
 }
 
 .spacing {
-  &__bottom {
-    &--small {
+  &--bottom {
+    &-small {
       margin-bottom: 10px;
     }
-    &--medium {
+    &-medium {
       margin-bottom: 20px;
     }
-    &--large {
+    &-large {
       margin-bottom: 30px;
     }
   }
-  &__top {
-    &--small {
+  &--top {
+    &-small {
       margin-top: 10px;
     }
-    &--medium {
+    &-medium {
       margin-top: 20px;
     }
-    &--large {
+    &-large {
       margin-top: 30px;
+    }
+  }
+  &--right {
+    &-small {
+      margin-right: 10px;
+    }
+    &-medium {
+      margin-right: 20px;
+    }
+    &-large {
+      margin-right: 30px;
+    }
+  }
+  &--left {
+    &-small {
+      margin-left: 10px;
+    }
+    &-medium {
+      margin-left: 20px;
+    }
+    &-large {
+      margin-left: 30px;
     }
   }
 }
@@ -58,17 +107,11 @@
   &__logo {
     font-size: 43px;
     padding: 10px 20px;
-    color: white;
     border-radius: 4px;
     font-weight: 800;
     text-transform: "uppercase";
   }
 }
-
-// .map {
-//   height: 400px;
-//   width: 100%;
-// }
 
 .list {
   padding: 0;
@@ -96,17 +139,16 @@
   font-size: 20px;
   padding: 0 10px;
   border-radius: 8px;
-  border: 2px solid #cbcbcb;
+  border: 2px solid #a4a4a4;
+  //border: 2px solid #cbcbcb;
   font-family: "Poppins";
   background-color: inherit;
-  color: white;
   &--center-text {
     text-align: center;
   }
 }
 
 .compass {
-  width: 66%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -116,85 +158,18 @@
     z-index: 200;
     transition: 0.3s all;
   }
-  &__arrow {
-    transform: scale(6);
-  }
-  &__pointer-container {
-    height: 100%;
-    position: absolute;
-    z-index: 10;
-    left: 50%;
-    margin-left: -2.5px;
-    display: flex;
-  }
-  &__pointer {
-    border-bottom-right-radius: 20px;
-    border-bottom-left-radius: 20px;
-    width: 5px;
-    height: 50%;
-    background-color: #2a2f47;
-    &--target {
-      background-color: indianred;
-    }
-  }
-  &__face {
-    border-radius: 50%;
-    background: linear-gradient(145deg, #24293c, #2b3048);
-    box-shadow:
-      20px 20px 60px #222639,
-      -20px -20px 60px #2e344d;
-    border-radius: 50%;
-    width: 100%;
-    position: relative;
-    border-radius: 100%;
-    &::before {
-      content: "";
-      display: block;
-      padding-bottom: 100%;
-    }
-  }
-  &__north-marker {
-    position: absolute;
-    top: 10px;
-    left: 50%;
-    margin-left: -16px;
-    font-size: 39px;
-    font-weight: bold;
-  }
-  &__east-marker {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    margin-top: -21.5px;
-    font-size: 39px;
-  }
-  &__south-marker {
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    margin-left: -13px;
-    font-size: 39px;
-  }
-  &__west-marker {
-    position: absolute;
-    top: 50%;
-    left: 10px;
-    font-size: 39px;
-    margin-top: -21.5px;
-  }
 }
 
-.session-identifier {
-  font-size: 16px;
-  font-weight: bold;
-  background-color: #282d43;
-  padding: 10px 30px;
-  border-bottom-right-radius: 20px;
-  border-bottom-left-radius: 20px;
-  box-shadow: rgb(113, 113, 113) 0px 3px 10px;
-  &__code {
-    font-size: 22px;
-  }
+.identifier {
+  background-color: rgba(40, 45, 67, 0.2);
+  border-top-right-radius: 40%;
+  border-top-left-radius: 40%;
+  width: 70%;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: -50px;
+  height: 50px;
 }
 
 .map {
@@ -205,22 +180,28 @@
 }
 
 .button {
-  min-width: 85px;
+  width: 100%;
   height: 40px;
-  border: 2px solid #cbcbcb;
   border-radius: 5px;
-  color: white;
   font-size: 16px;
-  font-weight: bold;
+  font-weight: 400;
   font-family: "Poppins";
-  background-color: #d75c71;
   font-size: 20px;
   text-transform: uppercase;
+  &--primary {
+    border: 2px solid black;
+    color: white;
+    background-color: black;
+  }
+  &--secondary {
+    border: 2px solid black;
+    color: black;
+    background-color: transparent;
+  }
 }
 
 .distance-indicator {
   z-index: 2;
-  height: 12px;
   display: flex;
   font-size: 20px;
   align-items: center;
@@ -231,6 +212,22 @@
   100% {
     transform: rotate(360deg);
   }
+}
+
+@keyframes fade-in-out {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.awaiting {
+  animation: fade-in-out 1.5s linear infinite;
 }
 
 .loader {

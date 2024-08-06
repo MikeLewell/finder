@@ -1,25 +1,31 @@
-const Marker = ({ text, color }: { text: string; color?: string }) => {
+interface IProps {
+  text: string;
+  color?: string;
+}
+
+const Marker: React.FC<IProps> = ({ text, color }) => {
   return (
     <div
       style={{
-        height: "40px",
-        width: "40px",
+        height: "30px",
+        width: "30px",
         borderRadius: "50%",
-        backgroundColor: color || "rgb(215, 92, 113)",
-        border: "3px solid white",
+        backgroundColor: color || "transparent",
+        border: "3px solid black",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        color: "black",
       }}
     >
-      <div
+      <span
         style={{
           fontWeight: 700,
-          fontSize: "17px",
+          fontSize: "14px",
         }}
       >
         {text}
-      </div>
+      </span>
     </div>
   );
 };

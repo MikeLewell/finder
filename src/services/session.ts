@@ -2,19 +2,25 @@ import { Observable, of, Subject } from "rxjs";
 import { fromFetch } from "rxjs/fetch";
 import { catchError, switchMap } from "rxjs/operators";
 import { ISession } from "../models/session";
-import Socket from "./socket";
 import { useState } from "react";
+import { Socket, io } from "socket.io-client";
+import { ApiError } from "../lib/error";
+
+const socket: Socket = io(`${process.env.REACT_APP_API}`);
 
 const useSession = () => {
   const session$ = new Subject<ISession>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  Socket.on("session", (session: ISession) => {
-    console.log("received session", session);
+  socket.on("session", (session: ISession) => {
     session$.next(session);
   });
 
-  const createSession = (payload: ISession): Observable<ISession> => {
+  const connectToSocketRoom = (sessionId: string): void => {
+    socket.emit("session:join_room", sessionId);
+  };
+
+  const createSession = (): Observable<ISession> => {
     setIsLoading(true);
 
     return fromFetch(`${process.env.REACT_APP_API}/session`, {
@@ -24,47 +30,51 @@ const useSession = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({}),
     }).pipe(
       switchMap((response) => {
         setIsLoading(false);
         if (response.ok) {
           return response.json();
-        } else {
-          return of(new Error(`Error ${response.status}`));
         }
+        throw new ApiError(response.statusText, response.status, "");
       }),
       catchError((err) => {
         setIsLoading(false);
         console.error(err);
-        return of(err);
+        throw err;
       })
     );
   };
 
-  const getSession = (id: string): Observable<ISession> => {
+  const getSession = (
+    id: string,
+    include: string[] = []
+  ): Observable<ISession> => {
     setIsLoading(true);
 
-    return fromFetch(`${process.env.REACT_APP_API}/session/${id}`, {
-      method: "GET",
-      mode: "cors",
-      cache: "no-cache",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }).pipe(
+    return fromFetch(
+      `${process.env.REACT_APP_API}/session/${id}?include=${include.join(",")}`,
+      {
+        method: "GET",
+        mode: "cors",
+        cache: "no-cache",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    ).pipe(
       switchMap((response) => {
         setIsLoading(false);
         if (response.ok) {
           return response.json();
-        } else {
-          return of(new Error(`Error ${response.status}`));
         }
+        throw new ApiError(response.statusText, response.status, "");
       }),
       catchError((err) => {
         setIsLoading(false);
         console.error(err);
-        return of(err);
+        throw err;
       })
     );
   };
@@ -85,20 +95,15 @@ const useSession = () => {
         setIsLoading(false);
         if (response.ok) {
           return response.json();
-        } else {
-          return of(new Error(`Error ${response.status}`));
         }
+        throw new ApiError(response.statusText, response.status, "");
       }),
       catchError((err) => {
         setIsLoading(false);
         console.error(err);
-        return of(err);
+        throw err;
       })
     );
-  };
-
-  const connectToSocketRoom = (sessionId: string): void => {
-    Socket.emit("session:join_room", sessionId);
   };
 
   return {

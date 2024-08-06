@@ -1,17 +1,23 @@
 interface IProps {
   buttonText: string;
-  disabled: boolean;
-  onClick: Function;
+  type?: "primary" | "secondary";
+  disabled?: boolean;
+  onClick?: Function;
 }
 
-const Button = (props: IProps) => {
+const Button: React.FC<IProps> = ({
+  buttonText,
+  type = "primary",
+  disabled,
+  onClick,
+}) => {
   return (
     <button
-      className="button"
-      disabled={props.disabled}
-      onClick={() => props.onClick()}
+      className={`button button--${type}`}
+      disabled={disabled}
+      onClick={() => onClick && onClick()}
     >
-      {props.buttonText}
+      {buttonText}
     </button>
   );
 };
